@@ -15,31 +15,34 @@
  * @author mengqk
  * 
  */
-$(function() {
-    // 绑定需要级联刷新的下拉菜单
-    $("select[relyon]").each(function() {
-        var selObj = $(this);
-        var relyOn = selObj.attr("relyon");
-        var relyOnSelObj = findSelectObject(selObj, relyOn);
+(function($){
+$.cascadingselect = {
+	/**
+	 * 初始化级联
+	 */
+	initRelyon: function (selObj){
+		var $this = this;
+    	var relyOn = selObj.attr("relyon");
+        var relyOnSelObj = $this.findSelectObject(selObj, relyOn);
         
         if (null == relyOnSelObj || relyOnSelObj.length == 0) {
             return; // 未找到relyon对象则不进行事件绑定
         }
         
         var qryData = {// 保存原始请求数据
-                serviceMethod : selObj.attr("serviceMethod"),
-                lazyInit : selObj.attr("lazyInit"),
-                typeId : selObj.attr("typeId"),
-                defaultValue : selObj.attr("defaultValue"),
-                valueItem : selObj.attr("valueItem"),
-                textItem : selObj.attr("textItem"),
-                isfull : selObj.attr("isfull")
+            serviceMethod : selObj.attr("serviceMethod"),
+            lazyInit : selObj.attr("lazyInit"),
+            typeId : selObj.attr("typeId"),
+            defaultValue : selObj.attr("defaultValue"),
+            valueItem : selObj.attr("valueItem"),
+            textItem : selObj.attr("textItem"),
+            isfull : selObj.attr("isfull")
         };
         relyOnSelObj.on("change", function() {
             //selObj.attr("disabled", true);
             var realQueryData = $.extend({}, qryData);
             if (realQueryData.serviceMethod && realQueryData.serviceMethod != "") {
-                realQueryData.serviceMethod = handleServiceMethod(selObj, $(this), realQueryData.serviceMethod);
+                realQueryData.serviceMethod = $this.handleServiceMethod(selObj, $(this), realQueryData.serviceMethod);
             }
             $.ajax({
                 url : $.walk.ctx + '/options/tag',
@@ -50,7 +53,7 @@ $(function() {
                 success : function(data){
                     //selObj.attr("disabled", false);
                     selObj.html(data);
-                    reInitSelect2(selObj);
+                    $this.reInitSelect2(selObj);
                 },
                 error : function() {
                     //selObj.attr("disabled", false);
@@ -62,22 +65,24 @@ $(function() {
             relyOnSelObj.trigger("change");
         } else if (qryData.isfull != "false") {
             selObj.html("<option value=''>全部</option>");
-            reInitSelect2(selObj);
+            $this.reInitSelect2(selObj);
         }
-    });
+    },
+    
     /**
      * 重新初始化Select2
      */
-    function reInitSelect2(selObj) {
+    reInitSelect2: function (selObj) {
         selObj.hasClass("w-select2") && !$.isIE9Under() 
         && seajs.use('$select2', function() {selObj.select2("destroy") && selObj.select2();});
         selObj.trigger("change");
-    }
+    },
     
     /**
      * 处理serviceMethod，给变量设值
      */
-    function handleServiceMethod(selObj, relyOnSelObj, serviceMethod) {
+    handleServiceMethod: function (selObj, relyOnSelObj, serviceMethod) {
+    	var $this = this;
         if (null == serviceMethod || serviceMethod == "" || serviceMethod.indexOf("$") == -1) {
             return serviceMethod;
         }
@@ -91,7 +96,7 @@ $(function() {
                     val = relyOnSelObj.val();
                 } else if (val.length > 1 && val.charAt(0) == "$") {
                     var finder = val.substring(1);
-                    var obj = findSelectObject(selObj, finder);
+                    var obj = $this.findSelectObject(selObj, finder);
                     if (obj && obj.length > 0) {
                         val = obj.val();
                     } else {
@@ -107,12 +112,12 @@ $(function() {
         } catch (e) {
         }
         return serviceMethod;
-    }
+    },
     
     /**
      * 寻找与selObj对象相关的select组件
      */
-    function findSelectObject(selObj, finder) {
+    findSelectObject: function(selObj, finder) {
         var parentForm = selObj.parent("form");
         var relyOnSelObj = null;
         if (parentForm && parentForm.length > 0) {
@@ -125,4 +130,5 @@ $(function() {
         
         return relyOnSelObj;
     }
-});
+}
+})(jQuery);
