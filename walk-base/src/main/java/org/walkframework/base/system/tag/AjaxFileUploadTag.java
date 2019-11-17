@@ -30,8 +30,11 @@ public class AjaxFileUploadTag extends BaseTag {
 	/** 限制上传个数 */
 	private Integer limit = 1;
 
-	/** 是否允许上传多个 */
+	/** 是否只读 */
 	private boolean readonly;
+	
+	/** 是否允许文件多选 */
+	private boolean multiple;
 
 	/** 文件ID列表，可以是字符串，多个以逗号分隔 。可以是List<String> */
 	private Object fileIds;
@@ -55,7 +58,7 @@ public class AjaxFileUploadTag extends BaseTag {
 			if (!StringUtils.isEmpty(getTypes())) {
 				html.append("		<span class=\"fileType\">(文件类型：<span class=\"types\">" + getTypes() + "</span>)</span>");
 			}
-			html.append("		<input type=\"file\" id=\"" + getId() + "\" limit=\"" + getLimit() + "\" " + (getLimit() > 1 ? "multiple=\"multiple\"" : "") + " onchange=\"$.walk.ajaxFileUpload(this);\"/>");
+			html.append("		<input type=\"file\" id=\"" + getId() + "\" limit=\"" + getLimit() + "\" " + (isMultiple() ? "multiple=\"multiple\"" : "") + " onchange=\"$.walk.ajaxFileUpload(this);\"/>");
 			html.append("	</div>");
 		}
 		html.append(generateFilesHtml());
@@ -151,5 +154,13 @@ public class AjaxFileUploadTag extends BaseTag {
 
 	public void setReadonly(boolean readonly) {
 		this.readonly = readonly;
+	}
+
+	public boolean isMultiple() {
+		return multiple;
+	}
+
+	public void setMultiple(boolean multiple) {
+		this.multiple = multiple;
 	}
 }

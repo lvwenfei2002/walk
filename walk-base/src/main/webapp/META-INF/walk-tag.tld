@@ -457,6 +457,13 @@
             <type>java.lang.Boolean</type>
         </attribute>
         <attribute>
+            <description>是否允许文件多选 </description>
+            <name>multiple</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
             <description>文件ID列表，可以是字符串，多个以逗号分隔 。可以是List，泛型String</description>
             <name>fileIds</name>
             <required>false</required>

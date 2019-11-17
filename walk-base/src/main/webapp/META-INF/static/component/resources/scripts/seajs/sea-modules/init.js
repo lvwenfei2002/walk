@@ -146,8 +146,15 @@ $.walk.init = function(){
 	});
 	
     // 加载级联下拉列表
-    if ($("select[relyon]").size() > 0) {
-    	addInit('$cascadingSelect');
+	if ($("select[relyon]").size() > 0) {
+    	addInit('$cascadingSelect', function(){
+    		$("select[relyon]").each(function() {
+    			var auto = $(this).attr("auto");
+    			if(auto != "false") {
+    				$.cascadingselect.initRelyon($(this));
+    			}
+    	    });
+    	});
     }
 	
 	//jQuery.select2组件初始化
