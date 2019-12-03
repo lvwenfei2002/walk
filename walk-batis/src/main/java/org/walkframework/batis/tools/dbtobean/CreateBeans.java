@@ -124,7 +124,7 @@ public class CreateBeans {
 		FileOutputStream fos = null;
 		BufferedWriter bw = null;
 		try {
-			String fullFileName = file + "\\" + bs + createClassName(tableName) + fileType;
+			String fullFileName = file + File.separator + bs + createClassName(tableName) + fileType;
 			fos = new FileOutputStream(fullFileName);
 			bw = new BufferedWriter(new OutputStreamWriter(fos, "utf-8"));
 			bw.write(msg);
