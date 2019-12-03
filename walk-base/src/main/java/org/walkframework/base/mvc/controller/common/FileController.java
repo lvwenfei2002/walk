@@ -69,6 +69,10 @@ public class FileController extends BaseController{
 		}
 		String fullName = tdMFile.getFilePath() + File.separator + tdMFile.getFileId();
 		String realName = tdMFile.getFileName();
+		File file = new File(fullName);
+		if (!file.exists()) {
+			fullName = tdMFile.getFilePath() + File.separator + realName;
+		}
 		FileUtil.showFile(response, fullName, realName);
 	}
 	

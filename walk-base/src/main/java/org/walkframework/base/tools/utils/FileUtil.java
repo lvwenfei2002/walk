@@ -299,8 +299,9 @@ public abstract class FileUtil {
 		String file_name = real_name == null ? full_name : real_name;
 
 		File file = new File(full_name);
-		if (!file.exists())
+		if (!file.exists()) {
 			common.error("文件 " + file_name + " 未找到!");
+		}
 
 		OutputStream out = getOutputStreamByShow(response, getContentTypeByFileName(file_name));
 		writeInputToOutput(new FileInputStream(file), out);
