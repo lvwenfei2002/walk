@@ -2407,13 +2407,13 @@ exportData:function(jq, opts){
 					if(!queryParams || !(typeof(queryParams) == "object" && Object.prototype.toString.call(queryParams).toLowerCase() == "[object object]" && !queryParams.length)) {
 						queryParams = {};
 					}
-					queryParams = {
+					$.extend(queryParams, {
 						asynExportWay : exportWay,
 						asynExportName : asynExportName,
 						asynExportAppointmentTime : asynExportAppointmentTime,
 						headerJSON : headerJSON, 
 						__actionType : 'asynExport'
-					};
+					});
 					
 					$.ajax({
 						type : "POST",
