@@ -26,7 +26,7 @@ public class StaticTranslator extends AbstractTranslator {
 			if (!StringUtils.isEmpty(sourceValue)) {
 				Object value = ParamTranslateUtil.convertStatic(typeId, getStringValue(sourceValue));
 				if(StringUtils.isEmpty(value)){
-					value = sourceValue;
+					value = getStringValue(sourceValue);
 				}
 				return (T) value;
 			}

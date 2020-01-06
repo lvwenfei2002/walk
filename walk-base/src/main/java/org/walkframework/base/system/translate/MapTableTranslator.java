@@ -30,7 +30,7 @@ public class MapTableTranslator extends AbstractTranslator {
 		Object sourceValue = mapObject.get(this.by);
 		Object value = ParamTranslateUtil.getTranslateValue(getStringValue(sourceValue), this.path);
 		if(StringUtils.isEmpty(value)){
-			value = sourceValue;
+			value = getStringValue(sourceValue);
 		}
 		return (T) value;
 	}

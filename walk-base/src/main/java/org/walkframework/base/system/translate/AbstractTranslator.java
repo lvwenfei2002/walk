@@ -52,7 +52,7 @@ public abstract class AbstractTranslator implements Translator {
 	 * @return
 	 */
 	protected String getStringValue(Object value){
-		return value == null ? null: value.toString();
+		return value == null ? null : String.valueOf(value);
 	}
 	
 }

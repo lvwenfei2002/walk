@@ -26,7 +26,7 @@ public class TableTranslator extends AbstractTranslator {
 			if (!StringUtils.isEmpty(sourceValue)) {
 				Object value = ParamTranslateUtil.getTranslateValue(getStringValue(sourceValue), translationPath);
 				if(StringUtils.isEmpty(value)){
-					value = sourceValue;
+					value = getStringValue(sourceValue);
 				}
 				return (T) value;
 			}

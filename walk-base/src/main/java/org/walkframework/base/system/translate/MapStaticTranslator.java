@@ -29,7 +29,7 @@ public class MapStaticTranslator extends AbstractTranslator {
 		Object sourceValue = mapObject.get(this.by);
 		Object value = ParamTranslateUtil.convertStatic(this.typeId, getStringValue(sourceValue));
 		if(StringUtils.isEmpty(value)){
-			value = sourceValue;
+			value = getStringValue(sourceValue);
 		}
 		return (T) value;
 	}
