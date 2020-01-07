@@ -773,27 +773,24 @@ $.walk = {
 		else {
 			this.confirm("确认导出吗？", function(ok){
 				if(ok){
-					var hiddenElements = "";
 					if (queryParams) {
 						//如果是带&符号的字符串参数，转换成json
 						if($.isString(queryParams)){
 							queryParams = $.walk.param2json(queryParams);
 						}
-						//判断是否是json
-						else if ($.isJson(queryParams)) {
-							var _params = $.extend({}, queryParams);
-							
-							//转换成元素
-							for (var key in _params) {
-								hiddenElements += '<input type="hidden" name="' + key + '" value="' + _params[key] + '"/>';
-							}
-						}
 					}
 					
 				    //提交导出
 					$('#tempDiv').remove();
-					$("<div id='tempDiv'><iframe name='IF_4down'></iframe></div>").appendTo($(document.body)).css('display', 'none').append('<form id="tempForm" action="' + url + '" target="IF_4down" method="post" accept-charset="UTF-8">' + hiddenElements + '<input type="hidden" name="__actionType" value="export"/></form>');
+					$("<div id='tempDiv'><iframe name='IF_4down'></iframe></div>").appendTo($(document.body)).css('display', 'none').append('<form id="tempForm" action="' + url + '" target="IF_4down" method="post" accept-charset="UTF-8"><input type="hidden" name="__actionType" value="export"/></form>');
 					document.charset = "UTF-8";
+					//赋值
+					if(_params){
+						for (var key in queryParams) {
+							$("#tempForm").append('<input type="hidden" name="' + key + '"/>');
+							$("#tempForm").find("input[name='" + key + "']").val(queryParams[key]);
+						}
+					}
 					$("#tempForm").submit().remove();
 				}
 			});

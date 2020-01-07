@@ -2468,27 +2468,32 @@ exportData:function(jq, opts){
 			$.messager.confirm("确认", "确定导出吗？", function(ok){
 				if(ok){
 					//将请求参数转换成hidden的input
-					var hiddenElements = "";
+					var _params;
 					if (queryParams) {
 						//判断是否是json
 						if (typeof(queryParams) == "object" && Object.prototype.toString.call(queryParams).toLowerCase() == "[object object]" && !queryParams.length) {
 							queryParams["__actionType"] = "export";
-							var _params = $.extend({}, queryParams);
+							_params = $.extend({}, queryParams);
 							if(dg.data && dg.data.total){
 								_params.exportTotal = dg.data.total; //导出总数
-							}
-							for (var key in _params) {
-								hiddenElements += '<input type="hidden" name="' + key + '" value="' + _params[key] + '"/>';
 							}
 						}
 					}
 					
 					//提交
 					$('#tempDiv').remove();
-					$("<div id='tempDiv'><iframe name='IF_4down'></iframe></div>").appendTo($(document.body)).css('display', 'none').append('<form id="tempForm" action="' + url + '" target="IF_4down" method="post" accept-charset="UTF-8">' + hiddenElements + '<input type="hidden" name="headerJSON" value=\'' + headerJSON + '\'/>' + '<input type="hidden" id="exportName" name="exportName"/></form>');
+					$("<div id='tempDiv'><iframe name='IF_4down'></iframe></div>").appendTo($(document.body)).css('display', 'none').append('<form id="tempForm" action="' + url + '" target="IF_4down" method="post" accept-charset="UTF-8"><input type="hidden" name="headerJSON"/><input type="hidden" id="exportName" name="exportName"/></form>');
 					document.charset = "UTF-8";
 					if(opts.exportName){
-						$("#exportName").val(opts.exportName);
+						$("#tempForm").find("#exportName").val(opts.exportName);
+					}
+					//赋值
+					$("#tempForm").find("input[name='headerJSON']").val(headerJSON);
+					if(_params){
+						for (var key in _params) {
+							$("#tempForm").append('<input type="hidden" name="' + key + '"/>');
+							$("#tempForm").find("input[name='" + key + "']").val(_params[key]);
+						}
 					}
 					$("#tempForm").submit().remove();
 				}
