@@ -2326,126 +2326,125 @@ exportData:function(jq, opts){
 		
 		//异步方式导出
 		if(isAsyn == "true"){
+			//先清理
+			$("#_asynExportWindow").remove();
+			//再生成
+			$(document.body).append(
+				'<div id="_asynExportWindow" class="w-form" style="display: none">'
+				+'   <div style="text-align:center;padding: 20px; display: none" class="asynExportWayDiv">'
+				+'    	<div class="w-cr-box">'
+				+'			<input type="radio" name="asynExportWay" value="1" checked="checked"/>即时导出'
+				+'			<input type="radio" name="asynExportWay" value="2"/>预约导出'
+				+'		</div>'
+				+'   </div>'
+				+'   <div style="text-align:center; padding: 20px;">'
+				+'   	<input type="text" class="w260 asynExportName" placeholder="请输入导出文件名称..."/>'
+				+'   </div>'
+				+'   <div style="text-align:center; padding: 20px; display: none">'
+				+'   	<input type="text" class="Wdate w260 asynExportAppointmentTime" placeholder="请选择预约导出时间..."/>'
+				+'   </div>'
+				+'   <div style="text-align:center; padding: 20px;">'
+				+'		<a class="w-a-btn orange btnSure" href="javascript:void(0)">确定</a>'
+				+'		<a class="w-a-btn blue btnCancel" href="javascript:void(0)">取消</a>'
+				+'	</div>'
+				+'</div>');
 			var exportWindow = $("#_asynExportWindow");
-			if(exportWindow.size() == 0) {
-				var asynExportWindowHtml = ''
-					+'<div id="_asynExportWindow" class="w-form" style="display: none">'
-					+'   <div style="text-align:center;padding: 20px; display: none" class="asynExportWayDiv">'
-					+'    	<div class="w-cr-box">'
-					+'			<input type="radio" name="asynExportWay" value="1" checked="checked"/>即时导出'
-					+'			<input type="radio" name="asynExportWay" value="2"/>预约导出'
-					+'		</div>'
-					+'   </div>'
-					+'   <div style="text-align:center; padding: 20px;">'
-					+'   	<input type="text" class="w260 asynExportName" placeholder="请输入导出文件名称..."/>'
-					+'   </div>'
-					+'   <div style="text-align:center; padding: 20px; display: none">'
-					+'   	<input type="text" class="Wdate w260 asynExportAppointmentTime" placeholder="请选择预约导出时间..."/>'
-					+'   </div>'
-					+'   <div style="text-align:center; padding: 20px;">'
-					+'		<a class="w-a-btn orange btnSure" href="javascript:void(0)">确定</a>'
-					+'		<a class="w-a-btn blue btnCancel" href="javascript:void(0)">取消</a>'
-					+'	</div>'
-					+'</div>';
-				$(document.body).append(asynExportWindowHtml);
-				exportWindow = $("#_asynExportWindow");
+			
+			//初始化一些组件
+			seajs.use(['$beautify','Wdate'], function(){
+				exportWindow.find(".w-cr-box").find("input[type=radio]").customBeautify();
+				exportWindow.find(".Wdate").css("height", "auto");
+			});
+			
+			//预约时间绑定
+			exportWindow.find(".asynExportAppointmentTime").click(function(){
+				var dconfig = {readOnly:true, isShowClear:false, isShowToday:false, dateFmt:'yyyy-MM-dd HH:mm:ss', minDate:'%y-%M-%d 00:00:00'};
+				if(dateConfig){
+					dconfig = eval("(" + dateConfig + ")");
+				}
+				WdatePicker(dconfig);
+			});
+			
+			//导出方式事件切换
+			exportWindow.find("input[name='asynExportWay']").click(function(){
+				var ths = $(this);
+				if(ths.val() == '1'){
+					exportWindow.find(".asynExportAppointmentTime").parent().hide();
+				} else if(ths.val() == '2'){
+					exportWindow.find(".asynExportAppointmentTime").parent().show();
+				}
+			});
+			
+			//导出方式设置
+			if(asynExportWay == '1|2'){
+				exportWindow.find(".asynExportWayDiv").show();
+			} else if(asynExportWay == '2'){
+				exportWindow.find("input[name='asynExportWay'][value='2']").click();
+			}
+			
+			//确定事件绑定
+			exportWindow.find(".btnSure").click(function(){
+				var exportWay = exportWindow.find("input[name='asynExportWay']:checked").val();
+				var asynExportName = $.trim(exportWindow.find(".asynExportName").val());
+				var asynExportAppointmentTime = exportWindow.find(".asynExportAppointmentTime").val();
 				
-				//初始化一些组件
-				seajs.use(['$beautify','Wdate'], function(){
-					exportWindow.find(".w-cr-box").find("input[type=radio]").customBeautify();
-					exportWindow.find(".Wdate").css("height", "auto");
-				});
-				
-				//预约时间绑定
-				exportWindow.find(".asynExportAppointmentTime").click(function(){
-					var dconfig = {readOnly:true, isShowClear:false, isShowToday:false, dateFmt:'yyyy-MM-dd HH:mm:ss', minDate:'%y-%M-%d 00:00:00'};
-					if(dateConfig){
-						dconfig = eval("(" + dateConfig + ")");
-					}
-					WdatePicker(dconfig);
-				});
-				
-				//导出方式事件切换
-				exportWindow.find("input[name='asynExportWay']").click(function(){
-					var ths = $(this);
-					if(ths.val() == '1'){
-						exportWindow.find(".asynExportAppointmentTime").parent().hide();
-					} else if(ths.val() == '2'){
-						exportWindow.find(".asynExportAppointmentTime").parent().show();
-					}
-				});
-				
-				//导出方式设置
-				if(asynExportWay == '1|2'){
-					exportWindow.find(".asynExportWayDiv").show();
-				} else if(asynExportWay == '2'){
-					exportWindow.find("input[name='asynExportWay'][value='2']").click();
+				if(!asynExportName){
+					$.messager.alert("错误", "请输入导出文件名称！", "error", function(){
+						exportWindow.find(".asynExportName").focus();
+					});
+					return;
+				}
+				if(exportWay == '2' && !asynExportAppointmentTime){
+					$.messager.alert("错误", "请选择预约导出时间！", "error", function(){
+						exportWindow.find(".asynExportAppointmentTime").focus();
+					});
+					return;
 				}
 				
-				//确定事件绑定
-				exportWindow.find(".btnSure").click(function(){
-					var exportWay = exportWindow.find("input[name='asynExportWay']:checked").val();
-					var asynExportName = $.trim(exportWindow.find(".asynExportName").val());
-					var asynExportAppointmentTime = exportWindow.find(".asynExportAppointmentTime").val();
-					
-					if(!asynExportName){
-						$.messager.alert("错误", "请输入导出文件名称！", "error", function(){
-							exportWindow.find(".asynExportName").focus();
-						});
-						return;
-					}
-					if(exportWay == '2' && !asynExportAppointmentTime){
-						$.messager.alert("错误", "请选择预约导出时间！", "error", function(){
-							exportWindow.find(".asynExportAppointmentTime").focus();
-						});
-						return;
-					}
-					
-					//关闭弹出窗口
-					exportWindow.window('close');
-					
-					if(!queryParams || !(typeof(queryParams) == "object" && Object.prototype.toString.call(queryParams).toLowerCase() == "[object object]" && !queryParams.length)) {
-						queryParams = {};
-					}
-					$.extend(queryParams, {
-						asynExportWay : exportWay,
-						asynExportName : asynExportName,
-						asynExportAppointmentTime : asynExportAppointmentTime,
-						headerJSON : headerJSON, 
-						__actionType : 'asynExport'
-					});
-					
-					$.ajax({
-						type : "POST",
-						url : url,
-						//提交的数据
-						data : queryParams,
-						success : function(rsp, textStatus, request) {
-							var exportId = request.getResponseHeader("asynExportId");
-							if(exportId) {
-								//提示信息
-								$.messager.confirm("确认", '导出任务创建成功，流水：' + exportId + '<br>您可以进入“我的导出”中查看导出进度。是否立即进入“我的导出”查看进度？', function(ok){
-									if(ok){
-										var myUrl = $("#pageContext").attr("contextName") + "/common/exportLog/toPage?exportId=" + exportId;
-										$.walk.openTab("我的导出", myUrl);
-										try {
-											$.walk.closeDialog($.walk.getTopWindow());
-										} catch (e){
-										}
-									}
-								});
-							} else {
-								$.messager.alert("错误", "创建导出任务失败！", "error");
-							}
-						}
-					});
+				//关闭弹出窗口
+				exportWindow.window('close');
+				
+				if(!queryParams || !(typeof(queryParams) == "object" && Object.prototype.toString.call(queryParams).toLowerCase() == "[object object]" && !queryParams.length)) {
+					queryParams = {};
+				}
+				$.extend(queryParams, {
+					asynExportWay : exportWay,
+					asynExportName : asynExportName,
+					asynExportAppointmentTime : asynExportAppointmentTime,
+					headerJSON : headerJSON, 
+					__actionType : 'asynExport'
 				});
 				
-				//取消事件绑定
-				exportWindow.find(".btnCancel").click(function(){
-					exportWindow.window('close');
+				$.ajax({
+					type : "POST",
+					url : url,
+					//提交的数据
+					data : queryParams,
+					success : function(rsp, textStatus, request) {
+						var exportId = request.getResponseHeader("asynExportId");
+						if(exportId) {
+							//提示信息
+							$.messager.confirm("确认", '导出任务创建成功，流水：' + exportId + '<br>您可以进入“我的导出”中查看导出进度。是否立即进入“我的导出”查看进度？', function(ok){
+								if(ok){
+									var myUrl = $("#pageContext").attr("contextName") + "/common/exportLog/toPage?exportId=" + exportId;
+									$.walk.openTab("我的导出", myUrl);
+									try {
+										$.walk.closeDialog($.walk.getTopWindow());
+									} catch (e){
+									}
+								}
+							});
+						} else {
+							$.messager.alert("错误", "创建导出任务失败！", "error");
+						}
+					}
 				});
-			}
+			});
+			
+			//取消事件绑定
+			exportWindow.find(".btnCancel").click(function(){
+				exportWindow.window('close');
+			});
 			
 			//弹出窗口
 			exportWindow.window({
