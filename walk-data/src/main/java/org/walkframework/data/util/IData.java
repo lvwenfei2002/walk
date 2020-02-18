@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 public interface IData<K,V> extends Map<K,V>, Serializable {
 	
 	/**
@@ -41,6 +43,23 @@ public interface IData<K,V> extends Map<K,V>, Serializable {
 	 * @return String
 	 */
 	public String getString(String name, String defaultValue);
+	
+	/**
+	 * getStringArray
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public String getStringArray(String name);
+	
+	/**
+	 * getStringArray
+	 * 
+	 * @param name
+	 * @param separator
+	 * @return
+	 */
+	public String getStringArray(String name, String separator);
 	
 	/**
 	 * get Short

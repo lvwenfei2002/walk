@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class DataMap<K,V> extends HashMap<K,V> implements IData<K,V> {
 	private static final long serialVersionUID = 1L;
 
@@ -40,6 +42,18 @@ public class DataMap<K,V> extends HashMap<K,V> implements IData<K,V> {
 	public String getString(String name, String defaultValue) {
 		Object value = get(name, defaultValue);
 		return value == null ? null : value.toString();
+	}
+	
+	public String getStringArray(String name) {
+		return getStringArray(name, ",");
+	}
+	
+	public String getStringArray(String name, String separator) {
+		Object value = get(name);
+		if(value instanceof String[]) {
+			return StringUtils.join((String[])value, separator);
+		}
+		return (String)value;
 	}
 	
 	@Override
