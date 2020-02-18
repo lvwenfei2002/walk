@@ -44,10 +44,12 @@ public class DataMap<K,V> extends HashMap<K,V> implements IData<K,V> {
 		return value == null ? null : value.toString();
 	}
 	
+	@Override
 	public String getStringArray(String name) {
 		return getStringArray(name, ",");
 	}
 	
+	@Override
 	public String getStringArray(String name, String separator) {
 		Object value = get(name);
 		if(value instanceof String[]) {
