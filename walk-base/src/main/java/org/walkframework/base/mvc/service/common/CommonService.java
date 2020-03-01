@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.walkframework.base.mvc.entity.TdSParam;
 import org.walkframework.data.bean.PageData;
 import org.walkframework.data.bean.Pagination;
@@ -65,7 +66,7 @@ public class CommonService extends AbstractBaseService {
 	 */
 	public String convertCode2Name(String typeId, String dataId){
 		String dataName = null;
-		if (typeId != null && !"".equals(typeId) && dataId != null && !"".equals(dataId)) {
+		if (StringUtils.isNotEmpty(typeId) && StringUtils.isNotEmpty(dataId)) {
 			List<TdSParam> list = queryStaticList(typeId, dataId);
 			if (list != null && list.size() > 0) {
 				dataName = list.get(0).getDataName();
@@ -83,11 +84,10 @@ public class CommonService extends AbstractBaseService {
 	 * @return
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
 	public String convertCode2Name(String tableName, String colCode, String colName, String value){
 		String convertName = null;
 		try {
-			if (!StringUtils.isEmpty(tableName) && !StringUtils.isEmpty(colCode) && !StringUtils.isEmpty(colName) && !StringUtils.isEmpty(value)) {
+			if (StringUtils.isNotEmpty(tableName) && StringUtils.isNotEmpty(colCode) && StringUtils.isNotEmpty(colName) && StringUtils.isNotEmpty(value)) {
 				Map<String, Object> param = new HashMap<String, Object>();
 				param.put("tableName", tableName);
 				param.put("colCode", colCode);
@@ -100,8 +100,11 @@ public class CommonService extends AbstractBaseService {
 				pagination.setNeedCount(false);
 				PageData<Map> pageData = dao().selectList("CommonSQL.selectCodeName", param, pagination);
 				List<Map> lst = pageData.getRows();
-				if (lst != null && lst.size() > 0) {
-					convertName = lst.get(0).get("CODE_NAME") == null ? null : lst.get(0).get("CODE_NAME").toString();
+				if (CollectionUtils.isNotEmpty(lst)) {
+					Map obj = lst.get(0);
+					if(obj != null) {
+						convertName = obj.get("CODE_NAME") == null ? null : obj.get("CODE_NAME").toString();
+					}
 				}
 			}
 		} catch (BadSqlGrammarException e) {

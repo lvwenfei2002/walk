@@ -12,6 +12,7 @@ import org.walkframework.base.system.factory.SingletonFactory;
 import org.walkframework.base.system.staticparam.StaticParamConstants;
 import org.walkframework.base.system.staticparam.StaticParamUtil;
 import org.walkframework.base.tools.spring.SpringContextHolder;
+import org.walkframework.base.tools.spring.SpringPropertyHolder;
 import org.walkframework.data.entity.EntityHelper;
 import org.walkframework.data.util.IData;
 
@@ -35,6 +36,7 @@ public abstract class ParamTranslateUtil {
 		if(StringUtil.isEmpty(value)){
 			return null;
 		}
+		
 		// 尝试从缓存取
 		IData<String, Object> cacheData = StaticParamUtil.getCache(StaticParamConstants.TD_S_STATIC).getValue(StaticParamUtil.getMapCacheKey(typeId));
 		if (cacheData != null && !cacheData.isEmpty()) {
@@ -42,10 +44,13 @@ public abstract class ParamTranslateUtil {
 		}
 
 		String convertName = null;
-		try {
-			convertName = SpringContextHolder.getBean(CommonService.class).convertCode2Name(typeId, value);
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+		boolean isQueryDb = Boolean.valueOf(SpringPropertyHolder.getContextProperty("cache.params.isQueryDb", "true"));
+		if(isQueryDb) {
+			try {
+				convertName = SpringContextHolder.getBean(CommonService.class).convertCode2Name(typeId, value);
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+			}
 		}
 		return convertName == null ? "" : convertName;
 	}
@@ -59,6 +64,7 @@ public abstract class ParamTranslateUtil {
 	 */
 	public static String getTranslateValue(String value, String datasrc) {
 		String staticValue = null;
+		boolean isQueryDb = Boolean.valueOf(SpringPropertyHolder.getContextProperty("cache.params.isQueryDb", "true"));
 		try {
 			String srcValue = value;
 			if(StringUtil.isEmpty(srcValue)){
@@ -71,7 +77,9 @@ public abstract class ParamTranslateUtil {
 				if (cacheData != null && !cacheData.isEmpty()) {
 					return MapSelector.getValue(cacheData, value + StaticParamConstants.POINT + "DATA_NAME");
 				}
-				staticValue = commonService.convertCode2Name(datasrc, srcValue);
+				if(isQueryDb) {
+					staticValue = commonService.convertCode2Name(datasrc, srcValue);
+				}
 			} else {
 				// 尝试从缓存取
 				try {
@@ -101,17 +109,19 @@ public abstract class ParamTranslateUtil {
 				}
 
 				// 从数据库查询
-				String[] srcs = datasrc.split(";");
-				for (int i = 0; i < srcs.length; i++) {
-					String[] array = srcs[i].split("\\.");
-					String tableName = array[0];
-					String colCode = array[1];
-					String colName = array[2];
-					staticValue = commonService.convertCode2Name(tableName, colCode, colName, srcValue);
-					if (staticValue == null) {
-						return staticValue;
+				if(isQueryDb) {
+					String[] srcs = datasrc.split(";");
+					for (int i = 0; i < srcs.length; i++) {
+						String[] array = srcs[i].split("\\.");
+						String tableName = array[0];
+						String colCode = array[1];
+						String colName = array[2];
+						staticValue = commonService.convertCode2Name(tableName, colCode, colName, srcValue);
+						if (staticValue == null) {
+							return staticValue;
+						}
+						srcValue = staticValue;
 					}
-					srcValue = staticValue;
 				}
 			}
 		} catch (Exception e) {
