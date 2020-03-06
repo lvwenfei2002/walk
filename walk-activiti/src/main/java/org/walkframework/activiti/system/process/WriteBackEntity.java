@@ -1,7 +1,5 @@
 package org.walkframework.activiti.system.process;
 
-
-
 /**
  * 回写业务表入参
  * @author shf675
@@ -57,6 +55,16 @@ public class WriteBackEntity {
 	 * 操作人
 	 */	
 	private String operator;
+	
+	/**	
+	 * 当前候选人列表，多个以逗号分隔	
+	 */	
+	private String procUsers;
+
+	/**	
+	 * 当前候选组列表，多个以逗号分隔	
+	 */	
+	private String procGroups;
 	
 	public String getBusinessTable() {
 		return businessTable;
@@ -136,5 +144,21 @@ public class WriteBackEntity {
 
 	public void setBusinessDesc(String businessDesc) {
 		this.businessDesc = businessDesc;
+	}
+
+	public String getProcUsers() {
+		return procUsers;
+	}
+
+	public void setProcUsers(String procUsers) {
+		this.procUsers = procUsers;
+	}
+
+	public String getProcGroups() {
+		return procGroups;
+	}
+
+	public void setProcGroups(String procGroups) {
+		this.procGroups = procGroups;
 	}
 }

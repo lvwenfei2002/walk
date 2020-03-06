@@ -97,6 +97,11 @@ public class ActWriteBackService extends BaseService {
 			}
 		}
 		
+		if(taskCandidates != null){
+			writeBackEntity.setProcUsers(taskCandidates[0]);
+			writeBackEntity.setProcGroups(taskCandidates[1]);
+		}
+		
 		//回写业务表
 		row = dao.update("ActProcessSQL.writeBackBusinessTable", writeBackEntity);
 		if(row > 0 && log.isInfoEnabled()){
