@@ -18,12 +18,8 @@
 			<if test="procTaskDefKey != null and procTaskDefKey != ''">
 				PROC_TASK_DEF_KEY = #{procTaskDefKey},
 			</if>
-			<if test="procUsers != null and procUsers != ''">
-				PROC_USERS = #{procUsers},
-			</if>
-			<if test="procGroups != null and procGroups != ''">
-				PROC_GROUPS = #{procGroups},
-			</if>
+			PROC_USERS = #{procUsers},
+			PROC_GROUPS = #{procGroups}
 		</set>
 		WHERE ${businessIdPrimaryKey} = #{businessId}
 	</update>
