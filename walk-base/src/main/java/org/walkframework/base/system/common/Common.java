@@ -825,7 +825,6 @@ public class Common {
 			return SpringContextHolder.getBean(springCacheManager, ICacheManager.class);
 			
 		} catch (Exception e) {
-			log.warn(e.getMessage(), e);
 		}
 		return null;
 	}
