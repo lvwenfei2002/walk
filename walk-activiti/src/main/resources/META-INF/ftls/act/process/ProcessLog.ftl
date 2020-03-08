@@ -10,7 +10,8 @@
 	<div class="w-panel">
 		<!-- 数据表 -->
 		<div class="w-panel-content">
-			<table id="dataGrid" class="easyui-datagrid" url="${request.contextPath}/act/process/queryProcessLogList/${orderId}" pagination="false">
+			<table id="dataGrid" class="easyui-datagrid" url="${request.contextPath}/act/process/queryProcessLogList/${orderId}" pagination="false"
+				data-options="onLoadSuccess:loadOk">
 				<thead>
 					<tr>
 						<th data-options="field:'logId',width:180">日志流水</th>
@@ -31,5 +32,13 @@
 		</div>
 	</div>
 </div>
+<script>
+function loadOk(){
+	var frameId = "${frameId}";
+	if(frameId){
+		$(parent.document).find("#" + frameId).height($(".wrapper").height()+20);
+	}
+}
+</script>
 </body>
 </html>
