@@ -45,14 +45,14 @@ public class ActProcessLogService extends BaseService {
 	 
 	/**
 	 * 查询流程操作日志
-	 * @param processInstId 流程实例ID
+	 * @param orderId 工单ID
 	 * @return
 	 */
 	@SuppressWarnings("serial")
-	public List<ActUdProcessLog> queryProcessLogList(final String procInstId) {
+	public List<ActUdProcessLog> queryProcessLogList(final String orderId) {
 		return dao.selectList(new ActUdProcessLog(){{
-			setProcInstId(procInstId).asCondition();
-			setCreateTime(null).asOrderByDesc();//按创建时间倒序排列
+			setOrderId(orderId).asCondition();
+			setLogId(null).asOrderByDesc();
 		}});
 	}
 	

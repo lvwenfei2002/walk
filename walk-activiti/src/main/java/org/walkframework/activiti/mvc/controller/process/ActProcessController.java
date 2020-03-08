@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.walkframework.activiti.mvc.entity.ActUdWorkorder;
 import org.walkframework.activiti.mvc.service.process.ActProcessConfigService;
+import org.walkframework.activiti.mvc.service.process.ActProcessLogService;
 import org.walkframework.activiti.mvc.service.process.ActWorkOrderService;
 import org.walkframework.activiti.system.constant.ProcessConstants;
 import org.walkframework.activiti.system.process.NodeConfigEntity;
@@ -31,6 +32,9 @@ public class ActProcessController extends BaseController {
 	
 	@Resource(name = "actWorkOrderService")
 	private ActWorkOrderService actWorkOrderService;
+	
+	@Resource(name = "actProcessLogService")
+	private ActProcessLogService actProcessLogService;
 	
 	@Resource(name = "actProcessConfigService")
 	private ActProcessConfigService actProcessConfigService;
@@ -76,5 +80,18 @@ public class ActProcessController extends BaseController {
 		String height = request.getParameter("height");
 		mv.addObject("height", StringUtils.isEmpty(height) ? "170" : height);
 		return mv;
+	}
+	
+	/**
+	 * 流程日志列表
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "queryProcessLogList/{orderId}")
+	public Object queryProcessLogList(@PathVariable String orderId){
+		if(StringUtils.isEmpty(orderId)) {
+			common.error("流程日志查询orderId不能为空！");
+		}
+		return actProcessLogService.queryProcessLogList(orderId);
 	}
 }
