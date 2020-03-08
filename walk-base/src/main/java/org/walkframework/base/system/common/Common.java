@@ -666,7 +666,7 @@ public class Common {
 	 * @return String
 	 */
 	public String getProperty(String file, String prop, String defval) {
-		ICache cache = getCacheManager().getICache("COM_CONFIG_COLLECT");
+		ICache cache = getICache("COM_CONFIG_COLLECT");
 		if (cache != null && cache.get(prop) != null) {
 			return cache.getValue(prop);
 		}
@@ -715,7 +715,7 @@ public class Common {
 	 */
 	@SuppressWarnings( { "rawtypes" })
 	public IData getProperties(String file, String prop) {
-		ICache cache = getCacheManager().getICache("COM_CONFIG_COLLECT");
+		ICache cache = getICache("COM_CONFIG_COLLECT");
 		if (cache != null && cache.get(prop) != null) {
 			return cache.getValue(prop);
 		}
@@ -797,7 +797,7 @@ public class Common {
 	 * @throws Exception
 	 */
 	public String getHintInfo(String prop) throws Exception {
-		ICache cache = getCacheManager().getICache("SYS_COLUMNS_CACHE");
+		ICache cache = getICache("SYS_COLUMNS_CACHE");
 		if (cache != null && cache.get(prop) != null) {
 			return cache.getValue(prop);
 		}
@@ -820,8 +820,29 @@ public class Common {
 	 * @return
 	 */
 	public ICacheManager getCacheManager() {
-		String springCacheManager = SpringPropertyHolder.getContextProperty("cacheManagerName", "springCacheManager");
-		return SpringContextHolder.getBean(springCacheManager, ICacheManager.class);
+		try {
+			String springCacheManager = SpringPropertyHolder.getContextProperty("cacheManagerName", "springCacheManager");
+			return SpringContextHolder.getBean(springCacheManager, ICacheManager.class);
+			
+		} catch (Exception e) {
+			log.warn(e.getMessage(), e);
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取缓存
+	 * 
+	 * @param cacheName
+	 * @return
+	 */
+	public ICache getICache(String cacheName) {
+		ICacheManager cacheManager = getCacheManager();
+		if(cacheManager == null) {
+			return null;
+		}
+		
+		return cacheManager.getICache(cacheName);
 	}
 
 	/**
