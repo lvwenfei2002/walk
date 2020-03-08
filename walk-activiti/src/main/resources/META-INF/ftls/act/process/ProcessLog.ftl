@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="wrapper">
-	<div class="w-panel">
+	<div class="w-panel" style="border-top: none">
 		<!-- 数据表 -->
 		<div class="w-panel-content">
 			<table id="dataGrid" class="easyui-datagrid" url="${request.contextPath}/act/process/queryProcessLogList/${orderId}" pagination="false"
