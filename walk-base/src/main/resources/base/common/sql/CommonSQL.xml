@@ -77,11 +77,11 @@
 			</if>
 			<!-- 开始时间 -->
 			<if test="beginDate != null and beginDate != ''">
-				<![CDATA[AND A.CREATE_TIME >= TO_DATE(#{beginDate}, 'YYYY-MM-DD')]]>
+				<![CDATA[AND A.CREATE_TIME >= ${beginDate}]]>
 			</if>
 			<!-- 结束时间 -->
 			<if test="endDate != null and endDate != ''">
-				<![CDATA[AND A.CREATE_TIME <= TO_DATE(#{endDate}, 'YYYY-MM-DD') + 1]]>
+				<![CDATA[AND A.CREATE_TIME <= ${endDate}]]>
 			</if>
 		</where>
 		ORDER BY A.CREATE_TIME DESC

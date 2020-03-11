@@ -36,11 +36,11 @@
 						<tr>
 							<td class="字段"> 开始日期 :</td>
 						    <td>
-							   	<input name="beginDate" type="text" class="Wdate w180" onclick="WdatePicker({readOnly:true,isShowClear:true, isShowToday:false, dateFmt:'yyyy-MM-dd'})"/>
+							   	<input name="beginDate" type="text" class="Wdate w180" onclick="WdatePicker({readOnly:true,isShowClear:true, isShowToday:false, dateFmt:'yyyy-MM-dd'})" readonly="readonly"/>
 						    </td>
 						    <td class="字段"> 结束日期 :</td>
 						    <td>
-								<input name="endDate" type="text" class="Wdate w180" onclick="WdatePicker({readOnly:true,isShowClear:true, isShowToday:false, dateFmt:'yyyy-MM-dd'})"/>
+								<input name="endDate" type="text" class="Wdate w180" onclick="WdatePicker({readOnly:true,isShowClear:true, isShowToday:false, dateFmt:'yyyy-MM-dd'})" readonly="readonly"/>
 						    </td>
 						    <td class="字段"> 导出模式：</td>
 							<td>
